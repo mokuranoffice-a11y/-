@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>申請書入力フォーム</title>
+<style>
+:root{--bg:#f4f6f9;--card:#fff;--ink:#1d2433;--sub:#5b6475;--line:#d7dce5;--brand:#1f4e8c}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 "Hiragino Sans","Meiryo","Noto Sans JP",sans-serif}
+header{background:var(--brand);color:#fff;padding:14px 16px}
+header h1{margin:0;font-size:18px;font-weight:600}
+header p{margin:2px 0 0;font-size:12px;opacity:.85}
+main{max-width:1080px;margin:0 auto;padding:16px}
+.search{width:100%;padding:10px 12px;font:inherit;border:1px solid #b9c1ce;border-radius:8px;margin-bottom:14px}
+.cols{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media (max-width:900px){.cols{grid-template-columns:1fr}}
+section{background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+section h2{margin:0;padding:10px 14px;font-size:15px;background:#e8eef7;color:var(--brand)}
+a.item{display:grid;grid-template-columns:34px 1fr;gap:8px;padding:9px 14px;border-top:1px solid #eef1f5;color:inherit;text-decoration:none}
+a.item:hover{background:#f3f7fd}
+a.item .k{font-weight:700;font-size:17px;color:var(--brand);text-align:center}
+a.item .d{font-size:13px;line-height:1.45}
+a.item .pdf{display:inline-block;margin-left:6px;font-size:11px;background:#2e7d32;color:#fff;border-radius:3px;padding:0 5px}
+.other{margin-top:14px}
+.note{margin-top:16px;font-size:13px;color:var(--sub);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.note a{color:var(--brand)}
+</style>
+</head>
+<body>
+<header>
+  <h1>申請書入力フォーム</h1>
+  <p>入管オンライン申請画面 2026-09-26 保存分をもとに作成（2026-09-30）</p>
+</header>
+<main>
+  <input class="search" id="q" placeholder="在留資格で探す（例：技術・人文知識、留学、配偶者）">
+  <div class="cols" id="cols"></div>
+  <section class="other" id="other"></section>
+  <div class="note">
+    入力した内容はこのPCのブラウザの中だけで扱われ、どこにも送信されません。「保存」でJSONファイルがダウンロードされます（<span style="background:#2e7d32;color:#fff;border-radius:3px;padding:0 5px;font-size:11px">PDF</span> の付いた種類は申請書PDFも同時に出ます）。
+  </div>
+</main>
+<script>
+const TYPES = [{"proc": "取得", "kb": "取得", "key": "acquire", "title": "在留資格取得許可申請", "group": "", "pdf": false}, {"proc": "変更", "kb": "I", "key": "change_I", "title": "在留資格変更許可申請（区分I）", "group": "区分I（教授）", "pdf": true}, {"proc": "変更", "kb": "J", "key": "change_J", "title": "在留資格変更許可申請（区分J）", "group": "区分J（文化活動）", "pdf": true}, {"proc": "変更", "kb": "K", "key": "change_K", "title": "在留資格変更許可申請（区分K）", "group": "区分Ｋ（宗教）", "pdf": true}, {"proc": "変更", "kb": "L", "key": "change_L", "title": "在留資格変更許可申請（区分L）", "group": "区分L（報道、研究（転勤）、企業内転勤）", "pdf": true}, {"proc": "変更", "kb": "M", "key": "change_M", "title": "在留資格変更許可申請（区分M）", "group": "区分M（経営・管理）", "pdf": true}, {"proc": "変更", "kb": "N", "key": "change_N", "title": "在留資格変更許可申請（区分N）", "group": "区分N（技能）", "pdf": true}, {"proc": "変更", "kb": "O", "key": "change_O", "title": "在留資格変更許可申請（区分O）", "group": "区分O（興行）", "pdf": false}, {"proc": "変更", "kb": "P", "key": "change_P", "title": "在留資格変更許可申請（区分P）", "group": "区分P（留学）", "pdf": true}, {"proc": "変更", "kb": "R", "key": "change_R", "title": "在留資格変更許可申請（区分R）", "group": "区分R（家族滞在，特定活動（研究等家族・情報処理家族，本邦大卒者家族，ＥＰＡ家族））", "pdf": true}, {"proc": "変更", "kb": "T", "key": "change_T", "title": "在留資格変更許可申請（区分T）", "group": "区分T（配偶者・定住者）", "pdf": true}, {"proc": "変更", "kb": "U", "key": "change_U", "title": "在留資格変更許可申請（区分U）", "group": "区分U（特定活動）", "pdf": false}, {"proc": "変更", "kb": "V", "key": "change_V", "title": "在留資格変更許可申請（区分V）", "group": "区分V（特定技能）", "pdf": true}, {"proc": "変更", "kb": "Y", "key": "change_Y", "title": "在留資格変更許可申請（区分Y）", "group": "区分Y（技能実習）", "pdf": true}, {"proc": "就労資格証明", "kb": "就労資格証明", "key": "workcert", "title": "就労資格証明書交付申請", "group": "", "pdf": false}, {"proc": "更新", "kb": "I", "key": "renew_I", "title": "在留期間更新許可申請（区分I）", "group": "区分I（教授）", "pdf": true}, {"proc": "更新", "kb": "J", "key": "renew_J", "title": "在留期間更新許可申請（区分J）", "group": "区分J（文化活動）", "pdf": true}, {"proc": "更新", "kb": "K", "key": "renew_K", "title": "在留期間更新許可申請（区分K）", "group": "区分Ｋ（宗教）", "pdf": true}, {"proc": "更新", "kb": "L", "key": "renew_L", "title": "在留期間更新許可申請（区分L）", "group": "区分L（報道、研究（転勤）、企業内転勤）", "pdf": true}, {"proc": "更新", "kb": "M", "key": "renew_M", "title": "在留期間更新許可申請（区分M）", "group": "区分M（経営・管理）", "pdf": true}, {"proc": "更新", "kb": "N", "key": "renew_N", "title": "在留期間更新許可申請（区分N）", "group": "区分N（技能）", "pdf": true}, {"proc": "更新", "kb": "O", "key": "renew_O", "title": "在留期間更新許可申請（区分O）", "group": "区分O（興行）", "pdf": false}, {"proc": "更新", "kb": "P", "key": "renew_P", "title": "在留期間更新許可申請（区分P）", "group": "区分P（留学）", "pdf": true}, {"proc": "更新", "kb": "Q", "key": "renew_Q", "title": "在留期間更新許可申請（区分Q）", "group": "区分Q（研修）", "pdf": true}, {"proc": "更新", "kb": "R", "key": "renew_R", "title": "在留期間更新許可申請（区分R）", "group": "区分R（家族滞在，特定活動（研究等家族・情報処理家族，本邦大卒者家族，ＥＰＡ家族））", "pdf": true}, {"proc": "更新", "kb": "T", "key": "renew_T", "title": "在留期間更新許可申請（区分T）", "group": "区分T（配偶者・定住者）", "pdf": true}, {"proc": "更新", "kb": "V", "key": "renew_V", "title": "在留期間更新許可申請（区分V）", "group": "区分V（特定技能）", "pdf": true}, {"proc": "更新", "kb": "Y", "key": "renew_Y", "title": "在留期間更新許可申請（区分Y）", "group": "区分Y（技能実習）", "pdf": true}, {"proc": "認定", "kb": "I", "key": "coe_I", "title": "在留資格認定証明書交付申請（区分I）", "group": "区分I（教授）", "pdf": true}, {"proc": "認定", "kb": "J", "key": "coe_J", "title": "在留資格認定証明書交付申請（区分J）", "group": "区分J（文化活動）", "pdf": true}, {"proc": "認定", "kb": "K", "key": "coe_K", "title": "在留資格認定証明書交付申請（区分K）", "group": "区分Ｋ（宗教）", "pdf": true}, {"proc": "認定", "kb": "L", "key": "coe_L", "title": "在留資格認定証明書交付申請（区分L）", "group": "区分L（報道、研究（転勤）、企業内転勤）", "pdf": true}, {"proc": "認定", "kb": "M", "key": "coe_M", "title": "在留資格認定証明書交付申請（区分M）", "group": "区分M（経営・管理）", "pdf": true}, {"proc": "認定", "kb": "N", "key": "coe_N", "title": "在留資格認定証明書交付申請（区分N）", "group": "区分N（技能）", "pdf": true}, {"proc": "認定", "kb": "O", "key": "coe_O", "title": "在留資格認定証明書交付申請（区分O）", "group": "区分O（興行）", "pdf": false}, {"proc": "認定", "kb": "P", "key": "coe_P", "title": "在留資格認定証明書交付申請（区分P）", "group": "区分P（留学）", "pdf": true}, {"proc": "認定", "kb": "Q", "key": "coe_Q", "title": "在留資格認定証明書交付申請（区分Q）", "group": "区分Q（研修）", "pdf": true}, {"proc": "認定", "kb": "R", "key": "coe_R", "title": "在留資格認定証明書交付申請（区分R）", "group": "区分R（家族滞在）", "pdf": true}, {"proc": "認定", "kb": "T", "key": "coe_T", "title": "在留資格認定証明書交付申請（区分T）", "group": "区分T（配偶者・定住者）", "pdf": true}, {"proc": "認定", "kb": "U", "key": "coe_U", "title": "在留資格認定証明書交付申請（区分U）", "group": "区分U（特定活動）", "pdf": false}, {"proc": "認定", "kb": "V", "key": "coe_V", "title": "在留資格認定証明書交付申請（区分V）", "group": "区分V（特定技能）", "pdf": true}, {"proc": "認定", "kb": "Y", "key": "coe_Y", "title": "在留資格認定証明書交付申請（区分Y）", "group": "区分Y（技能実習）", "pdf": true}];
+const DESC = {"取得_取得": "", "変更_I": "教育、教授", "変更_J": "芸術、文化活動", "変更_K": "宗教", "変更_L": "報道、研究（転勤）、企業内転勤", "変更_M": "経営・管理", "変更_N": "研究、特定活動（特定研究等活動（告示３６号））、技術・人文知識・国際業務、介護、技能", "変更_O": "興行", "変更_P": "留学", "変更_R": "家族滞在，特定活動（研究等家族・情報処理家族，本邦大卒者家族，ＥＰＡ家族）", "変更_T": "配偶者・定住者", "変更_U": "医療、公用、法律・会計業務、特定活動", "変更_V": "特定技能", "変更_Y": "技能実習", "就労資格証明_就労資格証明": "", "更新_I": "教育、教授", "更新_J": "芸術、文化活動", "更新_K": "宗教", "更新_L": "報道、研究（転勤）、企業内転勤", "更新_M": "経営・管理", "更新_N": "研究、特定活動（特定研究等活動（告示３６号））、技術・人文知識・国際業務、介護、技能", "更新_O": "興行", "更新_P": "留学", "更新_Q": "研修", "更新_R": "家族滞在，特定活動（研究等家族・情報処理家族，本邦大卒者家族，ＥＰＡ家族）", "更新_T": "配偶者・定住者", "更新_V": "特定技能", "更新_Y": "技能実習", "認定_I": "教育、教授", "認定_J": "芸術、文化活動", "認定_K": "宗教", "認定_L": "報道、研究（転勤）、企業内転勤", "認定_M": "経営・管理", "認定_N": "研究、特定活動（特定研究等活動（告示３６号））、技術・人文知識・国際業務、介護、技能", "認定_O": "興行", "認定_P": "留学", "認定_Q": "研修", "認定_R": "家族滞在", "認定_T": "配偶者・定住者", "認定_U": "医療、公用、法律・会計業務、特定活動", "認定_V": "特定技能", "認定_Y": "技能実習"};
+const cols = document.getElementById("cols"), other = document.getElementById("other");
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function item(t) {
+  const d = DESC[t.proc + "_" + t.kb] || t.title;
+  return `<a class="item" href="forms/${t.key}.html" data-s="${esc(t.title + d)}"><span class="k">${t.kb === t.proc ? "" : esc(t.kb)}</span><span class="d">${esc(d || t.title)}${t.pdf ? '<span class="pdf">PDF</span>' : ""}</span></a>`;
+}
+for (const [proc, label] of [["認定", "認定（在留資格認定証明書交付）"], ["変更", "変更（在留資格変更許可）"], ["更新", "更新（在留期間更新許可）"]]) {
+  const s = document.createElement("section");
+  s.innerHTML = `<h2>${label}</h2>` + TYPES.filter(t => t.proc === proc).map(item).join("");
+  cols.appendChild(s);
+}
+other.innerHTML = "<h2>その他</h2>" + TYPES.filter(t => !["認定", "変更", "更新"].includes(t.proc))
+  .map(t => `<a class="item" href="forms/${t.key}.html" data-s="${esc(t.title)}"><span class="k"></span><span class="d">${esc(t.title)}</span></a>`).join("");
+document.getElementById("q").addEventListener("input", e => {
+  const q = e.target.value.trim();
+  document.querySelectorAll("a.item").forEach(a => a.style.display = !q || a.dataset.s.includes(q) ? "" : "none");
+});
+</script>
+</body>
+</html>

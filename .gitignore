@@ -1,0 +1,51 @@
+# Publish allowlist for GitHub Pages.
+# Everything is ignored unless explicitly allowed below.
+/*
+
+# Repository safety rules
+!/.gitignore
+
+# GitHub Pages entry point and the companion Tampermonkey script
+!/index.html
+!/KIS_input.user.js
+
+# Empty application forms (HTML contains the required inline CSS/JavaScript)
+!/forms/
+/forms/*
+!/forms/*.html
+
+# Runtime-only PDF rendering dependencies and blank source PDFs
+!/assets/
+/assets/*
+!/assets/pdf-lib.min.js
+!/assets/fontkit.umd.min.js
+!/assets/paper_render.js
+!/assets/ipagp_sub.ttf
+!/assets/blank_*.pdf
+
+# Defense in depth if generated or sensitive files are ever placed here
+*.log
+*.tmp
+*.bak
+*.xlsx
+*.xls
+*.csv
+*.tsv
+*.env
+*.env.*
+*.pem
+*.key
+*secret*
+*credential*
+*token*
+*api-key*
+*apikey*
+*customer*
+*client-data*
+*filled*
+*generated*
+*output*
+*test*
+*stress*
+*sample*
+
