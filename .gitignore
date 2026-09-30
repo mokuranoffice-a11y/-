@@ -5,9 +5,9 @@
 # Repository safety rules
 !/.gitignore
 
-# GitHub Pages entry point and the companion Tampermonkey script
+# GitHub Pages entry point and bundled font license
 !/index.html
-!/KIS_input.user.js
+!/IPA_Font_License_Agreement_v1.0.txt
 
 # Empty application forms (HTML contains the required inline CSS/JavaScript)
 !/forms/
@@ -48,4 +48,3 @@
 *test*
 *stress*
 *sample*
-
