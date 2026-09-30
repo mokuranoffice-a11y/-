@@ -231,7 +231,7 @@ async function makePdf(values) {
     // 共通の部品（PDF作成ライブラリ・フォント・白紙様式）は assets/ から読む（初回のみ通信、あとはブラウザが保持）
     if (typeof PDFLib === "undefined") { await loadScript(PAPER.base + "pdf-lib.min.js"); await loadScript(PAPER.base + "fontkit.umd.min.js"); await loadScript(PAPER.base + "paper_render.js"); }
     const get = async u => { const r = await fetch(PAPER.base + u); if (!r.ok) throw new Error(u + " を読み込めません（" + r.status + "）"); return new Uint8Array(await r.arrayBuffer()); };
-    [blank, font] = await Promise.all([get(PAPER.blank), get("ipagp_sub.ttf")]);
+    [blank, font] = await Promise.all([get(PAPER.blank), get("ipagp.ttf")]);
   } else { blank = b64(PAPER.blank); font = b64(PAPER.font); }
   const items = PaperRender.buildItems(PAPER.map, values, DEF.fields);
   return await PaperRender.render(PDFLib, fontkit, blank, font, PAPER.layout, items);

@@ -20,7 +20,7 @@
 !/assets/pdf-lib.min.js
 !/assets/fontkit.umd.min.js
 !/assets/paper_render.js
-!/assets/ipagp_sub.ttf
+!/assets/ipagp.ttf
 !/assets/blank_*.pdf
 
 # Defense in depth if generated or sensitive files are ever placed here
